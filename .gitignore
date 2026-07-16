@@ -1,0 +1,9 @@
+# 원본 노션 추출 자료는 공개 저장소와 런타임에서 사용하지 않습니다.
+data/content.json
+data/images/
+
+# Local/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
