@@ -17,6 +17,7 @@
     {slug:"infra",title:"Linux · Docker",intro:"서버 운영체제와 컨테이너, 실행 환경을 재현하는 기본 개념을 모았다.",indexes:[100,116]},
     {slug:"realtime",title:"WebSocket & Redis",intro:"실시간 메시지와 빠른 데이터 저장이 필요한 이유와 활용 흐름을 정리한다.",indexes:[109,115]}
     ,{slug:"setup",title:"프로젝트 시작 가이드",intro:"새 프로젝트를 시작할 때 반복해서 필요한 설치, 설정, 연결 순서를 한곳에 모았다.",indexes:[]}
+    ,{slug:"plus-lab",title:"PLUS LAB",intro:"강사님 공유 자료에서 골라낸 실전 연동·배포 지식을 현재 기준으로 다시 설계한 보충 자료실.",indexes:[],plus:true}
   ];
   const categoryNav=document.getElementById("category-nav"),topicList=document.getElementById("topic-list"),reader=document.getElementById("reader");
   let activeCategory=0,activeNote=0;
@@ -61,7 +62,7 @@
   }
   function renderCategories(){
     if(!categoryNav.querySelector("[data-category]")){
-      categoryNav.innerHTML=categoryDefs.map((c,i)=>`<button data-category="${i}" class="${i===activeCategory?"active":""}"><span>${String(i+1).padStart(2,"0")}</span><b>${escapeHtml(c.title)}</b></button>`).join("")+`<i class="category-indicator" aria-hidden="true"></i>`;
+      categoryNav.innerHTML=categoryDefs.map((c,i)=>`<button data-category="${i}" class="${i===activeCategory?"active":""} ${c.plus?"plus-category":""}"><span>${c.plus?"+":String(i+1).padStart(2,"0")}</span><b>${escapeHtml(c.title)}</b></button>`).join("")+`<i class="category-indicator" aria-hidden="true"></i>`;
       const indicator=categoryNav.querySelector(".category-indicator");
       indicator?.classList.add("initializing");
       requestAnimationFrame(()=>{moveCategoryIndicator();requestAnimationFrame(()=>indicator?.classList.remove("initializing"));});
@@ -72,7 +73,7 @@
   }
   function renderTopics(){
     const category=categoryDefs[activeCategory],notes=getNotes();
-    document.getElementById("category-title").textContent=category.title;document.getElementById("category-intro").textContent=category.intro;document.getElementById("chapter-number").textContent=`CHAPTER ${String(activeCategory+1).padStart(2,"0")}`;
+    document.getElementById("category-title").textContent=category.title;document.getElementById("category-intro").textContent=category.intro;document.getElementById("chapter-number").textContent=category.plus?"SUPPLEMENT LIBRARY":`CHAPTER ${String(activeCategory+1).padStart(2,"0")}`;
     topicList.innerHTML=notes.map((note,i)=>{const important=i===0||/(트랜잭션|보안|Security|인증|객체|상태|배포|Docker|AWS|관계|REST|실행 흐름|프로젝트)/i.test(note.title);return `<button data-note="${note.sourceIndex}" class="${String(note.sourceIndex)===String(activeNote)?"active":""} ${important?"important":""}"><span>${String(i+1).padStart(2,"0")}</span><b>${escapeHtml(cleanTitle(note.title))}</b>${important?'<em aria-label="핵심 개념" title="핵심 개념">✦</em>':''}</button>`;}).join("");
     topicList.querySelector(".active")?.scrollIntoView({inline:"center",block:"nearest"});
   }
@@ -80,7 +81,9 @@
     const notes=getNotes(),note=notes.find((item)=>String(item.sourceIndex)===String(sourceIndex));if(!note)return;activeNote=String(sourceIndex);
     const position=notes.findIndex((n)=>String(n.sourceIndex)===String(sourceIndex)),prev=notes[position-1],next=notes[position+1];
     document.getElementById("note-position").textContent=`${position+1} / ${notes.length}`;document.getElementById("progress-bar").style.width=`${((position+1)/notes.length)*100}%`;
-    reader.innerHTML=`<header class="note-title"><p>${escapeHtml(categoryDefs[activeCategory].title)} · CONCEPT ${String(position+1).padStart(2,"0")}</p><h1>${escapeHtml(cleanTitle(note.title))}</h1>${note.summary?`<span>${escapeHtml(note.summary)}</span>`:""}</header><div class="note-body">${note.content}</div><nav class="reader-nav">${prev?`<button data-go="${prev.sourceIndex}"><small>PREVIOUS</small><b>← ${escapeHtml(cleanTitle(prev.title))}</b></button>`:"<span></span>"}${next?`<button data-go="${next.sourceIndex}"><small>NEXT</small><b>${escapeHtml(cleanTitle(next.title))} →</b></button>`:""}</nav>`;
+    const isPlus=categoryDefs[activeCategory].plus;
+    reader.classList.toggle("plus-reader",Boolean(isPlus));
+    reader.innerHTML=`<header class="note-title"><p>${isPlus?"PLUS LAB · PRACTICAL RECIPE":`${escapeHtml(categoryDefs[activeCategory].title)} · CONCEPT ${String(position+1).padStart(2,"0")}`}</p><h1>${escapeHtml(cleanTitle(note.title))}</h1>${note.summary?`<span>${escapeHtml(note.summary)}</span>`:""}</header><div class="note-body">${note.content}</div><nav class="reader-nav">${prev?`<button data-go="${prev.sourceIndex}"><small>PREVIOUS</small><b>← ${escapeHtml(cleanTitle(prev.title))}</b></button>`:"<span></span>"}${next?`<button data-go="${next.sourceIndex}"><small>NEXT</small><b>${escapeHtml(cleanTitle(next.title))} →</b></button>`:""}</nav>`;
     reader.classList.remove("note-enter");void reader.offsetWidth;reader.classList.add("note-enter");
     renderTopics();
     reader.querySelectorAll("blockquote").forEach((item)=>item.classList.add("key-point"));
