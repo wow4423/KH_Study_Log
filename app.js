@@ -60,7 +60,14 @@
     indicator.style.transform=`translate3d(${active.offsetLeft}px,0,0)`;
   }
   function renderCategories(){
-    categoryNav.innerHTML=categoryDefs.map((c,i)=>`<button data-category="${i}" class="${i===activeCategory?"active":""}"><span>${String(i+1).padStart(2,"0")}</span><b>${escapeHtml(c.title)}</b></button>`).join("")+`<i class="category-indicator" aria-hidden="true"></i>`;
+    if(!categoryNav.querySelector("[data-category]")){
+      categoryNav.innerHTML=categoryDefs.map((c,i)=>`<button data-category="${i}" class="${i===activeCategory?"active":""}"><span>${String(i+1).padStart(2,"0")}</span><b>${escapeHtml(c.title)}</b></button>`).join("")+`<i class="category-indicator" aria-hidden="true"></i>`;
+      const indicator=categoryNav.querySelector(".category-indicator");
+      indicator?.classList.add("initializing");
+      requestAnimationFrame(()=>{moveCategoryIndicator();requestAnimationFrame(()=>indicator?.classList.remove("initializing"));});
+    }else{
+      categoryNav.querySelectorAll("[data-category]").forEach((button,index)=>button.classList.toggle("active",index===activeCategory));
+    }
     requestAnimationFrame(()=>{categoryNav.querySelector(".active")?.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"});requestAnimationFrame(moveCategoryIndicator);});
   }
   function renderTopics(){
