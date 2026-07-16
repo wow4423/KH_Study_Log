@@ -3,19 +3,19 @@
     {slug:"html-css",title:"HTML & CSS",intro:"웹 페이지의 구조를 만들고 화면을 배치하는 기본부터 다시 본다.",indexes:[2,3,4,5,8,9,10]},
     {slug:"java",title:"Java",intro:"기초 문법부터 객체지향, 컬렉션, 예외, 스레드까지 Java의 흐름을 이어서 정리한다.",indexes:[11,12,15,16,17,18,19,22,23,24,25,26,29,31]},
     {slug:"git",title:"Git & GitHub",intro:"혼자 작업할 때와 팀으로 협업할 때 필요한 버전 관리 흐름을 다시 확인한다.",indexes:[32,78]},
-    {slug:"sql",title:"Oracle & SQL",intro:"데이터를 만들고 조회하고 변경하는 SQL과 관계형 데이터베이스의 핵심을 모았다.",indexes:[33,34,35,36,37,38,39,85]},
-    {slug:"jdbc",title:"JDBC",intro:"Java에서 DB까지 요청이 어떻게 이동하는지, 계층을 왜 나누는지 중심으로 본다.",indexes:[40,41,42,43,44]},
-    {slug:"javascript",title:"JavaScript",intro:"문법, DOM, 이벤트, 저장소, 비동기 통신까지 브라우저에서 일어나는 일을 정리한다.",indexes:[45,47,48,49,50,51,53,54,55]},
+    {slug:"sql",title:"Oracle & SQL",intro:"SELECT 문법부터 JOIN·집계·트랜잭션·인덱스까지, 결과가 만들어지는 이유를 단계별로 다시 본다.",indexes:[33,34,35,36,37,38,39,85]},
+    {slug:"jdbc",title:"JDBC",intro:"Connection을 얻는 순간부터 SQL 실행·객체 매핑·트랜잭션·반환까지 요청 한 건의 전체 수명을 따라간다.",indexes:[40,41,42,43,44]},
+    {slug:"javascript",title:"JavaScript",intro:"값과 실행 컨텍스트부터 DOM 이벤트·저장소·비동기 요청까지 브라우저 앱의 동작 흐름으로 연결한다.",indexes:[45,47,48,49,50,51,53,54,55]},
     {slug:"servlet-jsp",title:"Servlet & JSP",intro:"브라우저의 요청을 Java 서버가 받고 화면으로 돌려주는 전체 흐름을 다시 본다.",indexes:[57,58,60,61]},
-    {slug:"mybatis",title:"MyBatis",intro:"반복적인 JDBC 코드를 줄이고 Java 객체와 SQL을 연결하는 방법을 정리한다.",indexes:[62,63,64]},
-    {slug:"spring-mvc",title:"Spring MVC",intro:"Controller부터 응답까지, Spring 웹 애플리케이션의 구조와 기능을 모아서 본다.",indexes:[66,67,68,69,70,71,72,88,91,92]},
-    {slug:"spring-core",title:"Spring 핵심 기능",intro:"로깅, 암호화, Filter, Scheduler, AOP처럼 여러 곳에서 공통으로 쓰는 기능을 정리한다.",indexes:[73,74,75]},
-    {slug:"react",title:"React",intro:"컴포넌트와 Hook, 상태 관리, 서버 연동을 하나의 화면 흐름으로 다시 이해한다.",indexes:[79,80,81,82,83,84,93,94,95,98,113]},
-    {slug:"jpa",title:"JPA & QueryDSL",intro:"테이블을 객체로 다루는 방식과 영속성, 연관관계, 동적 조회를 다시 정리한다.",indexes:[96,97,104,111]},
-    {slug:"security",title:"JWT & Security",intro:"로그인 이후 토큰이 발급되고 검증되는 과정을 Spring Security와 연결해서 본다.",indexes:[105,106,107]},
+    {slug:"mybatis",title:"MyBatis",intro:"Mapper 연결부터 동적 SQL·트랜잭션·N+1 진단까지, SQL 통제권에 따르는 책임을 함께 익힌다.",indexes:[62,63,64]},
+    {slug:"spring-mvc",title:"Spring MVC",intro:"요청이 DispatcherServlet을 지나 객체로 변환되고 HTML·JSON·파일 응답으로 돌아가는 전체 파이프라인을 따라간다.",indexes:[66,67,68,69,70,71,72,88,91,92]},
+    {slug:"spring-core",title:"Spring 핵심 기능",intro:"프록시·트랜잭션·공통 처리·스케줄러가 실제로 어디서 적용되고 어떤 운영 증거를 남기는지 본다.",indexes:[73,74,75]},
+    {slug:"react",title:"React",intro:"렌더링 원리부터 Hook·Router·API·전역 상태까지, 화면이 바뀌는 이유를 코드 흐름으로 따라간다.",indexes:[79,80,81,82,83,84,93,94,95,98,113]},
+    {slug:"jpa",title:"JPA & QueryDSL",intro:"Entity 생명주기·트랜잭션·연관관계·N+1·DTO 경계·동적 조회를 실제 쿼리 흐름으로 연결한다.",indexes:[96,97,104,111]},
+    {slug:"security",title:"JWT & Security",intro:"회원가입부터 로그인·토큰 검증·갱신·권한 실패까지 Security Filter Chain의 순서대로 따라간다.",indexes:[105,106,107]},
     {slug:"aws",title:"AWS & 배포",intro:"콘솔을 처음 여는 순간부터 EC2·RDS·S3를 연결하고 Spring Boot를 계속 실행시키는 순간까지 실제 순서대로 따라간다.",indexes:[99,101,102,103,112]},
-    {slug:"infra",title:"Linux · Docker",intro:"서버 운영체제와 컨테이너, 실행 환경을 재현하는 기본 개념을 모았다.",indexes:[100,116]},
-    {slug:"realtime",title:"WebSocket & Redis",intro:"실시간 메시지와 빠른 데이터 저장이 필요한 이유와 활용 흐름을 정리한다.",indexes:[109,115]}
+    {slug:"infra",title:"Linux · Docker",intro:"이미지를 만드는 순간부터 실행·진단·Compose·Registry·EC2 배포와 IaC까지 재현 가능한 순서로 익힌다.",indexes:[100,116]},
+    {slug:"realtime",title:"WebSocket & Redis",intro:"연결·구독·저장·방송·재연결과 다중 서버 메시지 전달까지 실시간 기능의 전체 수명을 따라간다.",indexes:[109,115]}
     ,{slug:"setup",title:"프로젝트 시작 가이드",intro:"새 프로젝트를 시작할 때 반복해서 필요한 설치, 설정, 연결 순서를 한곳에 모았다.",indexes:[]}
     ,{slug:"plus-lab",title:"PLUS LAB",intro:"강사님 공유 자료에서 골라낸 실전 연동·배포 지식을 현재 기준으로 다시 설계한 보충 자료실.",indexes:[],plus:true}
   ];
