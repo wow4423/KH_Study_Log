@@ -13,7 +13,7 @@
     {slug:"react",title:"React",intro:"컴포넌트와 Hook, 상태 관리, 서버 연동을 하나의 화면 흐름으로 다시 이해한다.",indexes:[79,80,81,82,83,84,93,94,95,98,113]},
     {slug:"jpa",title:"JPA & QueryDSL",intro:"테이블을 객체로 다루는 방식과 영속성, 연관관계, 동적 조회를 다시 정리한다.",indexes:[96,97,104,111]},
     {slug:"security",title:"JWT & Security",intro:"로그인 이후 토큰이 발급되고 검증되는 과정을 Spring Security와 연결해서 본다.",indexes:[105,106,107]},
-    {slug:"aws",title:"AWS & 배포",intro:"만든 애플리케이션을 클라우드에 올리고 외부에서 접근하게 만드는 과정을 정리한다.",indexes:[99,101,102,103,112]},
+    {slug:"aws",title:"AWS & 배포",intro:"콘솔을 처음 여는 순간부터 EC2·RDS·S3를 연결하고 Spring Boot를 계속 실행시키는 순간까지 실제 순서대로 따라간다.",indexes:[99,101,102,103,112]},
     {slug:"infra",title:"Linux · Docker",intro:"서버 운영체제와 컨테이너, 실행 환경을 재현하는 기본 개념을 모았다.",indexes:[100,116]},
     {slug:"realtime",title:"WebSocket & Redis",intro:"실시간 메시지와 빠른 데이터 저장이 필요한 이유와 활용 흐름을 정리한다.",indexes:[109,115]}
     ,{slug:"setup",title:"프로젝트 시작 가이드",intro:"새 프로젝트를 시작할 때 반복해서 필요한 설치, 설정, 연결 순서를 한곳에 모았다.",indexes:[]}
