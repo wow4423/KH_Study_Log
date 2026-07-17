@@ -21,10 +21,6 @@
   ];
   const categoryNav=document.getElementById("category-nav"),topicList=document.getElementById("topic-list"),reader=document.getElementById("reader");
   let activeCategory=0,activeNote=0;
-  const MASTERY_KEY="ahj-study-mastery-v1";
-  const masteryLabels={new:"아직 낯설어요",learning:"복습 중이에요",explain:"내 말로 설명 가능"};
-  let mastery={};
-  try{mastery=JSON.parse(localStorage.getItem(MASTERY_KEY)||"{}");}catch(error){mastery={};}
   const escapeHtml=(s)=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   const plain=(html)=>{const el=document.createElement("div");el.innerHTML=html;return el.textContent.replace(/\s+/g," ").trim();};
   function cleanTitle(title){return String(title).replace(/^\d+(?:\.\d+)?\s*/,"").replace(/\s*실습(?:\s*노트)?$/," 실습").trim();}
@@ -78,20 +74,8 @@
   function renderTopics(){
     const category=categoryDefs[activeCategory],notes=getNotes();
     document.getElementById("category-title").textContent=category.title;document.getElementById("category-intro").textContent=category.intro;document.getElementById("chapter-number").textContent=category.plus?"SUPPLEMENT LIBRARY":`CHAPTER ${String(activeCategory+1).padStart(2,"0")}`;
-    topicList.innerHTML=notes.map((note,i)=>{const important=i===0||/(트랜잭션|보안|Security|인증|객체|상태|배포|Docker|AWS|관계|REST|실행 흐름|프로젝트)/i.test(note.title);const state=mastery[note.sourceIndex];return `<button data-note="${note.sourceIndex}" ${state?`data-mastery-state="${state}" title="학습 상태: ${masteryLabels[state]}"`:""} class="${String(note.sourceIndex)===String(activeNote)?"active":""} ${important?"important":""}"><span>${String(i+1).padStart(2,"0")}</span><b>${escapeHtml(cleanTitle(note.title))}</b>${important?'<em aria-label="핵심 개념" title="핵심 개념">✦</em>':''}</button>`;}).join("");
+    topicList.innerHTML=notes.map((note,i)=>{const important=i===0||/(트랜잭션|보안|Security|인증|객체|상태|배포|Docker|AWS|관계|REST|실행 흐름|프로젝트)/i.test(note.title);return `<button data-note="${note.sourceIndex}" class="${String(note.sourceIndex)===String(activeNote)?"active":""} ${important?"important":""}"><span>${String(i+1).padStart(2,"0")}</span><b>${escapeHtml(cleanTitle(note.title))}</b>${important?'<em aria-label="핵심 개념" title="핵심 개념">✦</em>':''}</button>`;}).join("");
     topicList.querySelector(".active")?.scrollIntoView({inline:"center",block:"nearest"});
-  }
-  function masteryPanel(note){
-    const state=mastery[note.sourceIndex]||"";
-    return `<section class="mastery-panel" aria-label="학습 숙련도"><div><span>MY LEARNING STATE</span><h2>이 개념, 지금 어디까지 왔나요?</h2><p>수업을 들었다고 이미 아는 것으로 처리하지 않습니다. 현재 상태를 남기면 다음 복습 때 어디서 시작할지 바로 알 수 있어요.</p></div><div class="mastery-options">${Object.entries(masteryLabels).map(([value,label])=>`<button type="button" data-set-mastery="${value}" class="${state===value?"selected":""}" aria-pressed="${state===value}"><i></i>${label}</button>`).join("")}</div></section>`;
-  }
-  function updateMastery(sourceIndex,state){
-    mastery[sourceIndex]=state;
-    try{localStorage.setItem(MASTERY_KEY,JSON.stringify(mastery));}catch(error){}
-    const note=getNotes().find((item)=>String(item.sourceIndex)===String(sourceIndex));
-    const currentPanel=reader.querySelector(".mastery-panel");
-    if(note&&currentPanel)currentPanel.outerHTML=masteryPanel(note);
-    renderTopics();
   }
   function showNote(sourceIndex,moveToReadingStart=false){
     const notes=getNotes(),note=notes.find((item)=>String(item.sourceIndex)===String(sourceIndex));if(!note)return;activeNote=String(sourceIndex);
@@ -99,7 +83,7 @@
     document.getElementById("note-position").textContent=`${position+1} / ${notes.length}`;document.getElementById("progress-bar").style.width=`${((position+1)/notes.length)*100}%`;
     const isPlus=categoryDefs[activeCategory].plus;
     reader.classList.toggle("plus-reader",Boolean(isPlus));
-    reader.innerHTML=`<header class="note-title"><p>${isPlus?"PLUS LAB · PRACTICAL RECIPE":`${escapeHtml(categoryDefs[activeCategory].title)} · CONCEPT ${String(position+1).padStart(2,"0")}`}</p><h1>${escapeHtml(cleanTitle(note.title))}</h1>${note.summary?`<span>${escapeHtml(note.summary)}</span>`:""}</header>${masteryPanel(note)}<div class="note-body">${note.content}</div><nav class="reader-nav">${prev?`<button data-go="${prev.sourceIndex}"><small>PREVIOUS</small><b>← ${escapeHtml(cleanTitle(prev.title))}</b></button>`:"<span></span>"}${next?`<button data-go="${next.sourceIndex}"><small>NEXT</small><b>${escapeHtml(cleanTitle(next.title))} →</b></button>`:""}</nav>`;
+    reader.innerHTML=`<header class="note-title"><p>${isPlus?"PLUS LAB · PRACTICAL RECIPE":`${escapeHtml(categoryDefs[activeCategory].title)} · CONCEPT ${String(position+1).padStart(2,"0")}`}</p><h1>${escapeHtml(cleanTitle(note.title))}</h1>${note.summary?`<span>${escapeHtml(note.summary)}</span>`:""}</header><div class="note-body">${note.content}</div><nav class="reader-nav">${prev?`<button data-go="${prev.sourceIndex}"><small>PREVIOUS</small><b>← ${escapeHtml(cleanTitle(prev.title))}</b></button>`:"<span></span>"}${next?`<button data-go="${next.sourceIndex}"><small>NEXT</small><b>${escapeHtml(cleanTitle(next.title))} →</b></button>`:""}</nav>`;
     reader.classList.remove("note-enter");void reader.offsetWidth;reader.classList.add("note-enter");
     renderTopics();
     reader.querySelectorAll("blockquote").forEach((item)=>item.classList.add("key-point"));
@@ -108,7 +92,7 @@
   function selectCategory(index){activeCategory=index;const first=getNotes(index)[0];activeNote=first?.sourceIndex||0;renderCategories();renderTopics();if(first)showNote(first.sourceIndex);}
   categoryNav.addEventListener("click",(e)=>{const b=e.target.closest("[data-category]");if(b)selectCategory(Number(b.dataset.category));});
   topicList.addEventListener("click",(e)=>{const b=e.target.closest("[data-note]");if(b)showNote(b.dataset.note,true);});
-  reader.addEventListener("click",(e)=>{const masteryButton=e.target.closest("[data-set-mastery]");if(masteryButton){updateMastery(activeNote,masteryButton.dataset.setMastery);return;}const b=e.target.closest("[data-go]");if(b)showNote(b.dataset.go,true);});
+  reader.addEventListener("click",(e)=>{const b=e.target.closest("[data-go]");if(b)showNote(b.dataset.go,true);});
   function enableDragScroll(container){
     let down=false,startX=0,startScroll=0,moved=false,suppressClick=false;
     container.addEventListener("pointerdown",(event)=>{if(event.pointerType==="mouse"&&event.button!==0)return;down=true;moved=false;suppressClick=false;startX=event.clientX;startScroll=container.scrollLeft;});
