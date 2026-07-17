@@ -69,13 +69,13 @@
     }else{
       categoryNav.querySelectorAll("[data-category]").forEach((button,index)=>button.classList.toggle("active",index===activeCategory));
     }
-    requestAnimationFrame(()=>{categoryNav.querySelector(".active")?.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"});requestAnimationFrame(moveCategoryIndicator);});
+    requestAnimationFrame(()=>{const active=categoryNav.querySelector(".active");if(active)categoryNav.scrollTo({left:Math.max(0,active.offsetLeft-(categoryNav.clientWidth-active.offsetWidth)/2),behavior:"smooth"});requestAnimationFrame(moveCategoryIndicator);});
   }
   function renderTopics(){
     const category=categoryDefs[activeCategory],notes=getNotes();
     document.getElementById("category-title").textContent=category.title;document.getElementById("category-intro").textContent=category.intro;document.getElementById("chapter-number").textContent=category.plus?"SUPPLEMENT LIBRARY":`CHAPTER ${String(activeCategory+1).padStart(2,"0")}`;
-    topicList.innerHTML=notes.map((note,i)=>{const important=i===0||/(트랜잭션|보안|Security|인증|객체|상태|배포|Docker|AWS|관계|REST|실행 흐름|프로젝트)/i.test(note.title);return `<button data-note="${note.sourceIndex}" class="${String(note.sourceIndex)===String(activeNote)?"active":""} ${important?"important":""}"><span>${String(i+1).padStart(2,"0")}</span><b>${escapeHtml(cleanTitle(note.title))}</b>${important?'<em aria-label="핵심 개념" title="핵심 개념">✦</em>':''}</button>`;}).join("");
-    topicList.querySelector(".active")?.scrollIntoView({inline:"center",block:"nearest"});
+    topicList.innerHTML=notes.map((note,i)=>{const important=i===0||/(트랜잭션|보안|Security|인증|객체|상태|배포|Docker|AWS|관계|REST|실행 흐름|프로젝트)/i.test(note.title);return `<button data-note="${note.sourceIndex}" class="${String(note.sourceIndex)===String(activeNote)?"active":""} ${important?"important":""}" ${String(note.sourceIndex)===String(activeNote)?'aria-current="page"':""}><span>${String(i+1).padStart(2,"0")}</span><b>${escapeHtml(cleanTitle(note.title))}</b>${important?'<em aria-label="중요 개념" title="중요 개념"></em>':''}</button>`;}).join("");
+    const current=topicList.querySelector(".active");if(current){if(window.matchMedia("(max-width:700px)").matches)topicList.scrollLeft=Math.max(0,current.offsetLeft-(topicList.clientWidth-current.offsetWidth)/2);else topicList.scrollTop=Math.max(0,current.offsetTop-(topicList.clientHeight-current.offsetHeight)/2);}
   }
   function showNote(sourceIndex,moveToReadingStart=false){
     const notes=getNotes(),note=notes.find((item)=>String(item.sourceIndex)===String(sourceIndex));if(!note)return;activeNote=String(sourceIndex);
