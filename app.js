@@ -52,7 +52,7 @@
   function getNotes(categoryIndex=activeCategory){
     const category=categoryDefs[categoryIndex],curated=(window.CURATED_STUDY||[]).find((item)=>item.slug===category.slug);
     if(!curated)return [];
-    return curated.lessons.map((lesson,index)=>({title:lesson.title,content:lesson.body,summary:lesson.summary,detail:Boolean(lesson.detail),sourceIndex:`${category.slug}-${index}`,curated:true}));
+    return curated.lessons.map((lesson,index)=>({title:lesson.title,content:lesson.body,summary:lesson.summary,sourceIndex:`${category.slug}-${index}`,curated:true}));
   }
   function moveCategoryIndicator(){
     const active=categoryNav.querySelector("button.active"),indicator=categoryNav.querySelector(".category-indicator");
@@ -74,8 +74,7 @@
   function renderTopics(){
     const category=categoryDefs[activeCategory],notes=getNotes();
     document.getElementById("category-title").textContent=category.title;document.getElementById("category-intro").textContent=category.intro;document.getElementById("chapter-number").textContent=category.plus?"SUPPLEMENT LIBRARY":`CHAPTER ${String(activeCategory+1).padStart(2,"0")}`;
-    let detailStarted=false;
-    topicList.innerHTML=notes.map((note,i)=>{const important=!note.detail&&(i===0||/(트랜잭션|보안|Security|인증|객체|상태|배포|Docker|AWS|관계|REST|실행 흐름|프로젝트)/i.test(note.title));const divider=note.detail&&!detailStarted?(detailStarted=true,'<div class="topic-section-label"><b>처음부터 상세 학습</b><span>원문 필기 수준으로 다시 보기</span></div>'):'';return `${divider}<button data-note="${note.sourceIndex}" class="${String(note.sourceIndex)===String(activeNote)?"active":""} ${important?"important":""} ${note.detail?"detail-topic":""}"><span>${String(i+1).padStart(2,"0")}</span><b>${escapeHtml(cleanTitle(note.title))}</b>${important?'<em aria-label="핵심 개념" title="핵심 개념">✦</em>':''}</button>`;}).join("");
+    topicList.innerHTML=notes.map((note,i)=>{const important=i===0||/(트랜잭션|보안|Security|인증|객체|상태|배포|Docker|AWS|관계|REST|실행 흐름|프로젝트)/i.test(note.title);return `<button data-note="${note.sourceIndex}" class="${String(note.sourceIndex)===String(activeNote)?"active":""} ${important?"important":""}"><span>${String(i+1).padStart(2,"0")}</span><b>${escapeHtml(cleanTitle(note.title))}</b>${important?'<em aria-label="핵심 개념" title="핵심 개념">✦</em>':''}</button>`;}).join("");
     topicList.querySelector(".active")?.scrollIntoView({inline:"center",block:"nearest"});
   }
   function showNote(sourceIndex,moveToReadingStart=false){
@@ -84,7 +83,7 @@
     document.getElementById("note-position").textContent=`${position+1} / ${notes.length}`;document.getElementById("progress-bar").style.width=`${((position+1)/notes.length)*100}%`;
     const isPlus=categoryDefs[activeCategory].plus;
     reader.classList.toggle("plus-reader",Boolean(isPlus));
-    reader.innerHTML=`<header class="note-title"><p>${isPlus?"PLUS LAB · PRACTICAL RECIPE":note.detail?`${escapeHtml(categoryDefs[activeCategory].title)} · DETAILED LESSON ${String(position+1).padStart(2,"0")}`:`${escapeHtml(categoryDefs[activeCategory].title)} · CONCEPT ${String(position+1).padStart(2,"0")}`}</p><h1>${escapeHtml(cleanTitle(note.title))}</h1>${note.summary?`<span>${escapeHtml(note.summary)}</span>`:""}</header><div class="note-body ${note.detail?"detail-note":""}">${note.content}</div><nav class="reader-nav">${prev?`<button data-go="${prev.sourceIndex}"><small>PREVIOUS</small><b>← ${escapeHtml(cleanTitle(prev.title))}</b></button>`:"<span></span>"}${next?`<button data-go="${next.sourceIndex}"><small>NEXT</small><b>${escapeHtml(cleanTitle(next.title))} →</b></button>`:""}</nav>`;
+    reader.innerHTML=`<header class="note-title"><p>${isPlus?"PLUS LAB · PRACTICAL RECIPE":`${escapeHtml(categoryDefs[activeCategory].title)} · CONCEPT ${String(position+1).padStart(2,"0")}`}</p><h1>${escapeHtml(cleanTitle(note.title))}</h1>${note.summary?`<span>${escapeHtml(note.summary)}</span>`:""}</header><div class="note-body">${note.content}</div><nav class="reader-nav">${prev?`<button data-go="${prev.sourceIndex}"><small>PREVIOUS</small><b>← ${escapeHtml(cleanTitle(prev.title))}</b></button>`:"<span></span>"}${next?`<button data-go="${next.sourceIndex}"><small>NEXT</small><b>${escapeHtml(cleanTitle(next.title))} →</b></button>`:""}</nav>`;
     reader.classList.remove("note-enter");void reader.offsetWidth;reader.classList.add("note-enter");
     renderTopics();
     reader.querySelectorAll("blockquote").forEach((item)=>item.classList.add("key-point"));
