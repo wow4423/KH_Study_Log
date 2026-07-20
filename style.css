@@ -231,3 +231,11 @@ body.search-open{overflow:hidden}.search-dialog{width:min(640px,calc(100vw - 32p
 /* Use the same bookmark silhouette everywhere the saved state appears. */
 .study-dock .dock-bookmark-glyph{width:12px!important;height:17px!important;background:#d2a6ad;clip-path:polygon(0 0,100% 0,100% 100%,50% 73%,0 100%)}
 .sidebar-bookmark{width:7px;height:10px;background:#a67889;clip-path:polygon(0 0,100% 0,100% 100%,50% 73%,0 100%)}
+
+/* Keep the lesson index quiet: state is expressed by the row, not extra badges. */
+.sidebar-heading{align-items:center}.sidebar-heading>span{display:none!important}
+.topic-strip button{grid-template-columns:29px minmax(0,1fr)!important;padding:10px 30px 10px 12px!important}
+.topic-strip button em{display:none!important}
+.topic-strip button.visited:not(.active)>span::after{display:none!important}
+.topic-strip button.important:not(.active)>span{background:transparent!important;color:#9096a4!important;font-weight:600!important}
+.sidebar-bookmark{right:11px;top:50%;bottom:auto;width:8px;height:12px;transform:translateY(-50%);box-shadow:none}

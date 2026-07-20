@@ -179,7 +179,7 @@ public interface MemberMapper {
   <p>원문은 형상관리자가 저장소를 만들고 팀원이 SourceTree로 clone한 뒤 기능 branch를 push하는 화면을 단계별로 남겼다. 지금도 흐름은 같지만 token을 URL 문자열에 넣는 방식은 사용하지 않는다. Git Credential Manager나 SSH key처럼 자격 증명을 안전하게 보관하는 방식을 사용한다.</p>
   <h2>관리자와 팀원의 첫 단계</h2>
   <table><tr><th>역할</th><th>처음 할 일</th></tr><tr><td>저장소 관리자</td><td>저장소, 기본 branch, .gitignore, README, branch rule, 권한을 준비한다.</td></tr><tr><td>팀원</td><td>정확한 URL을 clone하고 build·test를 실행한 뒤 개인 기능 branch를 만든다.</td></tr></table>
-  <figure class="console-shot"><img src="assets/setup-guide/git-clone.png" alt="SourceTree에서 저장소 주소와 local 폴더를 입력하는 원문 화면" loading="lazy"><figcaption>clone 화면에서는 원격 URL뿐 아니라 local 대상 폴더를 본다. 이미 Git 저장소인 상위 폴더 안에 다시 clone하지 않도록 주의한다.</figcaption></figure>
+  <div class="note-warning"><strong>Clone 화면에서 확인할 두 곳</strong><p>Remote URL은 팀 저장소 주소인지, Local path는 새로 받을 빈 폴더인지 확인한다. 이미 Git 저장소인 상위 폴더 안에 다시 clone하지 않는다.</p></div>
   <h2>처음 저장소를 만드는 순서</h2>
   <pre data-lang="Shell"><code>git init
 git status
