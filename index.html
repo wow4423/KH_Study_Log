@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AWS 클라우드 기반 DevOps 개발자 양성 과정 7회차 학습 정리</title>
   <meta name="description" content="7개월 동안 배운 내용을 개념별로 다시 묶고 다듬은 개인 학습 노트입니다." />
-  <link rel="stylesheet" href="style.css?v=20260720-3" />
+  <link rel="stylesheet" href="style.css?v=20260720-4" />
 </head>
 <body>
   <header class="site-header">
@@ -21,21 +21,6 @@
   </nav>
 
   <main class="study-main">
-    <section class="study-utilities" aria-label="학습 편의 기능">
-      <button class="search-entry" type="button" data-open-search aria-haspopup="dialog" aria-controls="search-dialog">
-        <i aria-hidden="true">⌕</i>
-        <span><strong>배운 개념 바로 찾기</strong><small>제목뿐 아니라 144개 노트의 본문까지 검색해요</small></span>
-        <kbd>Ctrl K</kbd>
-      </button>
-      <div class="utility-actions">
-        <button type="button" data-open-library aria-haspopup="dialog" aria-controls="library-dialog"><i aria-hidden="true">◆</i><span>내 학습함</span><em data-bookmark-count>0</em></button>
-        <button type="button" id="random-note"><i aria-hidden="true">↝</i><span>랜덤 복습</span></button>
-      </div>
-      <div class="course-progress" aria-label="전체 학습 진행도">
-        <span><strong>읽은 개념</strong><em id="course-progress-text">0 / 0</em></span>
-        <i><b id="course-progress-bar"></b></i>
-      </div>
-    </section>
     <section class="chapter-head">
       <div><span id="chapter-number"></span><h2 id="category-title"></h2><p id="category-intro"></p></div>
       <div class="chapter-progress"><span id="note-position"></span><i><b id="progress-bar"></b></i></div>
@@ -49,7 +34,6 @@
     </div>
     <button class="top-button" id="top-button" aria-label="페이지 맨 위로 이동"><span>↑</span> TOP</button>
   </main>
-  <button class="search-trigger" id="search-trigger" type="button" aria-label="학습 노트 검색 열기" aria-haspopup="dialog" aria-controls="search-dialog"><i aria-hidden="true">⌕</i><b>검색</b><em>Ctrl K</em></button>
   <dialog class="search-dialog" id="search-dialog" aria-label="학습 노트 검색">
     <div class="search-shell">
       <header class="search-header">
@@ -73,8 +57,6 @@
       <div class="library-list" id="library-list"></div>
     </div>
   </dialog>
-  <button class="library-trigger-floating" type="button" data-open-library aria-label="북마크와 최근 본 개념 열기" aria-haspopup="dialog" aria-controls="library-dialog"><i aria-hidden="true">◆</i><b>내 학습함</b><em data-bookmark-count>0</em></button>
-  <button class="toolbox-trigger" id="toolbox-trigger" type="button" aria-label="수업 도구함 열기" aria-haspopup="dialog" aria-controls="toolbox-dialog"><i aria-hidden="true"><span></span><span></span><span></span><span></span></i><b>TOOLS</b><em>16</em></button>
   <dialog class="toolbox-dialog" id="toolbox-dialog" aria-labelledby="toolbox-title">
     <div class="toolbox-shell">
       <header class="toolbox-header">
@@ -85,6 +67,13 @@
       <div class="toolbox-groups" id="toolbox-groups"></div>
     </div>
   </dialog>
+  <nav class="study-dock" aria-label="학습 도구">
+    <button id="search-trigger" type="button" aria-label="학습 노트 검색 열기" aria-haspopup="dialog" aria-controls="search-dialog"><i aria-hidden="true">⌕</i><span>검색</span><kbd>Ctrl K</kbd></button>
+    <button type="button" data-open-library aria-label="북마크와 최근 본 개념 열기" aria-haspopup="dialog" aria-controls="library-dialog"><i aria-hidden="true">◆</i><span>학습함</span><em data-bookmark-count>0</em></button>
+    <button type="button" id="random-note" aria-label="무작위 개념으로 이동"><i aria-hidden="true">↝</i><span>랜덤 복습</span></button>
+    <button type="button" id="toolbox-trigger" aria-label="수업 도구함 열기" aria-haspopup="dialog" aria-controls="toolbox-dialog"><i class="dock-grid" aria-hidden="true"><b></b><b></b><b></b><b></b></i><span>설치 도구</span></button>
+    <div class="dock-progress" aria-label="전체 학습 진행도"><span>읽음 <em id="course-progress-text">0 / 0</em></span><i><b id="course-progress-bar"></b></i></div>
+  </nav>
   <script src="data/curated-content.js"></script>
   <script src="data/curated/frontend.js"></script>
   <script src="data/curated/java-web.js"></script>
@@ -116,9 +105,10 @@
   <script src="data/curated/worked-examples.js"></script>
   <script src="data/curated/content-finalize.js"></script>
   <script src="data/curated/plus-lab.js"></script>
-  <script src="app.js?v=20260720-3"></script>
-  <script src="search.js?v=20260720-3"></script>
-  <script src="study-tools.js?v=20260720-3"></script>
+  <script src="data/curated/course-example-alignment.js"></script>
+  <script src="app.js?v=20260720-4"></script>
+  <script src="search.js?v=20260720-4"></script>
+  <script src="study-tools.js?v=20260720-4"></script>
   <script src="toolbox.js"></script>
 </body>
 </html>
