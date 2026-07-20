@@ -102,9 +102,30 @@
       .join("");
   }
 
-  function goTo(sourceIndex) {
-    nav.goToSource(sourceIndex);
+  function revealMatch(query) {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) return;
+    const tokens = normalized.split(/\s+/).filter(Boolean).sort((a, b) => b.length - a.length);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const root = document.querySelector("#reader .note-body");
+      if (!root) return;
+      const candidates = [...root.querySelectorAll("h2,h3,h4,p,li,td,th,blockquote,pre")]
+        .filter((el) => !el.closest(".learning-guide"));
+      const exact = candidates.find((el) => el.textContent.toLowerCase().includes(normalized));
+      const target = exact || candidates.find((el) => tokens.some((token) => el.textContent.toLowerCase().includes(token)));
+      if (!target) return;
+      target.classList.remove("search-hit-pulse");
+      void target.offsetWidth;
+      target.classList.add("search-hit-pulse");
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
+      window.setTimeout(() => target.classList.remove("search-hit-pulse"), 2600);
+    }));
+  }
+
+  function goTo(sourceIndex, query = input.value) {
+    nav.goToSource(sourceIndex, false);
     closeSearch();
+    revealMatch(query);
   }
 
   function openSearch() {
@@ -131,7 +152,7 @@
   input.addEventListener("input", () => renderResults(input.value));
   resultsBox.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-source]");
-    if (btn) goTo(btn.dataset.source);
+    if (btn) goTo(btn.dataset.source, input.value);
   });
   input.addEventListener("keydown", (e) => {
     if (e.key === "ArrowDown") {
@@ -146,7 +167,7 @@
       updateActive();
     } else if (e.key === "Enter") {
       e.preventDefault();
-      if (activeIndex >= 0 && currentResults[activeIndex]) goTo(currentResults[activeIndex].entry.sourceIndex);
+      if (activeIndex >= 0 && currentResults[activeIndex]) goTo(currentResults[activeIndex].entry.sourceIndex, input.value);
     }
   });
 
