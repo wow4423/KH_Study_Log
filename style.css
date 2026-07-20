@@ -224,3 +224,10 @@ body.search-open{overflow:hidden}.search-dialog{width:min(640px,calc(100vw - 32p
 @media print{.study-dock{display:none!important}}
 
 .course-code-context{margin:24px 0 9px;padding:12px 15px;border:1px solid #ddd9e3;border-radius:11px;background:linear-gradient(120deg,#f3f2f7,#f8f3f2)}.course-code-context span{display:block;color:#8e6577;font-size:10px;font-weight:800;letter-spacing:.06em}.course-code-context p{margin:4px 0 0;color:#667084;font-size:12px;line-height:1.6}
+
+/* Familiar bookmark control: outline before saving, filled after saving */
+.note-bookmark-button{width:38px;height:38px;padding:0!important;border-radius:11px;display:grid;place-items:center;color:#8d8791}.note-bookmark-button span{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}.note-bookmark-button .bookmark-glyph{position:relative;width:15px!important;height:20px!important;display:block!important;background:currentColor;clip-path:polygon(0 0,100% 0,100% 100%,50% 73%,0 100%);transition:color .18s ease,transform .18s ease}.note-bookmark-button .bookmark-glyph::after{content:"";position:absolute;inset:2px 2px 3px;background:#faf9fa;clip-path:polygon(0 0,100% 0,100% 100%,50% 72%,0 100%)}.note-bookmark-button:hover .bookmark-glyph{color:#9d7082;transform:translateY(-1px)}.note-bookmark-button.active{color:#9d657a}.note-bookmark-button.active .bookmark-glyph::after{display:none}.note-bookmark-button.active .bookmark-glyph{filter:drop-shadow(0 3px 5px rgba(135,79,104,.2))}
+
+/* Use the same bookmark silhouette everywhere the saved state appears. */
+.study-dock .dock-bookmark-glyph{width:12px!important;height:17px!important;background:#d2a6ad;clip-path:polygon(0 0,100% 0,100% 100%,50% 73%,0 100%)}
+.sidebar-bookmark{width:7px;height:10px;background:#a67889;clip-path:polygon(0 0,100% 0,100% 100%,50% 73%,0 100%)}
