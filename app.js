@@ -20,6 +20,7 @@
     ,{slug:"plus-lab",title:"PLUS LAB",intro:"강사님 공유 자료에서 골라낸 실전 연동·배포 지식을 현재 기준으로 다시 설계한 보충 자료실.",indexes:[],plus:true}
   ];
   const categoryNav=document.getElementById("category-nav"),topicList=document.getElementById("topic-list"),reader=document.getElementById("reader");
+  const STORAGE_KEY="study-log:last-note";
   let activeCategory=0,activeNote=0;
   const escapeHtml=(s)=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   const plain=(html)=>{const el=document.createElement("div");el.innerHTML=html;return el.textContent.replace(/\s+/g," ").trim();};
@@ -79,20 +80,54 @@
   }
   function showNote(sourceIndex,moveToReadingStart=false){
     const notes=getNotes(),note=notes.find((item)=>String(item.sourceIndex)===String(sourceIndex));if(!note)return;activeNote=String(sourceIndex);
+    rememberLocation(activeNote);
     const position=notes.findIndex((n)=>String(n.sourceIndex)===String(sourceIndex)),prev=notes[position-1],next=notes[position+1];
     document.getElementById("note-position").textContent=`${position+1} / ${notes.length}`;document.getElementById("progress-bar").style.width=`${((position+1)/notes.length)*100}%`;
     const isPlus=categoryDefs[activeCategory].plus;
     reader.classList.toggle("plus-reader",Boolean(isPlus));
-    reader.innerHTML=`<header class="note-title"><p>${isPlus?"PLUS LAB · PRACTICAL RECIPE":`${escapeHtml(categoryDefs[activeCategory].title)} · CONCEPT ${String(position+1).padStart(2,"0")}`}</p><h1>${escapeHtml(cleanTitle(note.title))}</h1>${note.summary?`<span>${escapeHtml(note.summary)}</span>`:""}</header><div class="note-body">${note.content}</div><nav class="reader-nav">${prev?`<button data-go="${prev.sourceIndex}"><small>PREVIOUS</small><b>← ${escapeHtml(cleanTitle(prev.title))}</b></button>`:"<span></span>"}${next?`<button data-go="${next.sourceIndex}"><small>NEXT</small><b>${escapeHtml(cleanTitle(next.title))} →</b></button>`:""}</nav>`;
+    reader.innerHTML=`<header class="note-title"><div class="note-title-row"><p>${isPlus?"PLUS LAB · PRACTICAL RECIPE":`${escapeHtml(categoryDefs[activeCategory].title)} · CONCEPT ${String(position+1).padStart(2,"0")}`}</p><button class="note-link-button" type="button" data-copy-link aria-label="현재 학습 노트 링크 복사"><i aria-hidden="true">↗</i><span>링크 복사</span></button></div><h1>${escapeHtml(cleanTitle(note.title))}</h1>${note.summary?`<span>${escapeHtml(note.summary)}</span>`:""}</header><div class="note-body">${note.content}</div><nav class="reader-nav">${prev?`<button data-go="${prev.sourceIndex}"><small>PREVIOUS</small><b>← ${escapeHtml(cleanTitle(prev.title))}</b></button>`:"<span></span>"}${next?`<button data-go="${next.sourceIndex}"><small>NEXT</small><b>${escapeHtml(cleanTitle(next.title))} →</b></button>`:""}</nav>`;
     reader.classList.remove("note-enter");void reader.offsetWidth;reader.classList.add("note-enter");
     renderTopics();
     reader.querySelectorAll("blockquote").forEach((item)=>item.classList.add("key-point"));
     if(moveToReadingStart){requestAnimationFrame(()=>{const rail=document.querySelector(".category-rail");const offset=(rail?.offsetHeight||80)+18;const top=reader.getBoundingClientRect().top+window.scrollY-offset;window.scrollTo({top:Math.max(0,top),behavior:"smooth"});});}
   }
+  function rememberLocation(sourceIndex){
+    try{history.replaceState(null,"",`#${sourceIndex}`);}catch(e){}
+    try{localStorage.setItem(STORAGE_KEY,String(sourceIndex));}catch(e){}
+  }
+  function readStoredLocation(){try{return localStorage.getItem(STORAGE_KEY);}catch(e){return null;}}
+  function findByHash(hash){
+    const raw=String(hash||"").replace(/^#/,""),match=raw.match(/^(.+)-(\d+)$/);
+    if(!match)return null;
+    const categoryIndex=categoryDefs.findIndex((c)=>c.slug===match[1]);
+    if(categoryIndex===-1)return null;
+    const note=getNotes(categoryIndex)[Number(match[2])];
+    return note?{categoryIndex,sourceIndex:note.sourceIndex}:null;
+  }
+  function goToSource(sourceIndex,moveToReadingStart=true){
+    const target=findByHash(`#${sourceIndex}`);if(!target)return;
+    if(target.categoryIndex!==activeCategory){activeCategory=target.categoryIndex;renderCategories();}
+    showNote(target.sourceIndex,moveToReadingStart);
+  }
+  function goRelative(direction){
+    const notes=getNotes(),position=notes.findIndex((note)=>String(note.sourceIndex)===String(activeNote));
+    if(position+direction>=0&&position+direction<notes.length){showNote(notes[position+direction].sourceIndex,true);return;}
+    const nextCategory=activeCategory+direction;
+    if(nextCategory<0||nextCategory>=categoryDefs.length)return;
+    const nextNotes=getNotes(nextCategory);if(!nextNotes.length)return;
+    activeCategory=nextCategory;renderCategories();showNote(nextNotes[direction>0?0:nextNotes.length-1].sourceIndex,true);
+  }
+  async function copyCurrentLink(button){
+    const url=location.href;
+    try{await navigator.clipboard.writeText(url);}
+    catch(e){const area=document.createElement("textarea");area.value=url;area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();document.execCommand("copy");area.remove();}
+    const label=button.querySelector("span");if(!label)return;label.textContent="복사 완료";button.classList.add("copied");
+    window.setTimeout(()=>{label.textContent="링크 복사";button.classList.remove("copied");},1600);
+  }
   function selectCategory(index){activeCategory=index;const first=getNotes(index)[0];activeNote=first?.sourceIndex||0;renderCategories();renderTopics();if(first)showNote(first.sourceIndex);}
   categoryNav.addEventListener("click",(e)=>{const b=e.target.closest("[data-category]");if(b)selectCategory(Number(b.dataset.category));});
   topicList.addEventListener("click",(e)=>{const b=e.target.closest("[data-note]");if(b)showNote(b.dataset.note,true);});
-  reader.addEventListener("click",(e)=>{const b=e.target.closest("[data-go]");if(b)showNote(b.dataset.go,true);});
+  reader.addEventListener("click",(e)=>{const b=e.target.closest("[data-go]");if(b){showNote(b.dataset.go,true);return;}const copy=e.target.closest("[data-copy-link]");if(copy)copyCurrentLink(copy);});
   function enableDragScroll(container){
     let down=false,startX=0,startScroll=0,moved=false,suppressClick=false;
     container.addEventListener("pointerdown",(event)=>{if(event.pointerType==="mouse"&&event.button!==0)return;down=true;moved=false;suppressClick=false;startX=event.clientX;startScroll=container.scrollLeft;});
@@ -103,6 +138,15 @@
   }
   enableDragScroll(categoryNav);enableDragScroll(topicList);
   window.addEventListener("resize",moveCategoryIndicator,{passive:true});
+  document.addEventListener("keydown",(event)=>{
+    const isTyping=["INPUT","TEXTAREA","SELECT"].includes(event.target.tagName)||event.target.isContentEditable;
+    if(isTyping||event.ctrlKey||event.metaKey||event.altKey||document.querySelector("dialog[open]"))return;
+    if(event.key==="ArrowLeft"||event.key==="ArrowRight"){event.preventDefault();goRelative(event.key==="ArrowRight"?1:-1);}
+  });
   document.getElementById("top-button").addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
-  selectCategory(0);
+  window.addEventListener("hashchange",()=>{const target=findByHash(location.hash);if(target)goToSource(target.sourceIndex,false);});
+  const initial=findByHash(location.hash)||findByHash(`#${readStoredLocation()||""}`);
+  if(initial){activeCategory=initial.categoryIndex;renderCategories();showNote(initial.sourceIndex);}
+  else{selectCategory(0);}
+  window.StudyNav={categoryDefs,getNotes,cleanTitle,plain,goToSource,goRelative};
 })();

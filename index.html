@@ -34,6 +34,17 @@
     </div>
     <button class="top-button" id="top-button" aria-label="페이지 맨 위로 이동"><span>↑</span> TOP</button>
   </main>
+  <button class="search-trigger" id="search-trigger" type="button" aria-haspopup="dialog" aria-controls="search-dialog"><i aria-hidden="true">⌕</i><b>SEARCH</b><em>Ctrl K</em></button>
+  <dialog class="search-dialog" id="search-dialog" aria-label="학습 노트 검색">
+    <div class="search-shell">
+      <header class="search-header">
+        <input type="search" id="search-input" placeholder="개념·키워드로 검색 (예: JWT, N+1, useEffect)" aria-label="학습 노트 검색" autocomplete="off" />
+        <button class="search-close" id="search-close" type="button" aria-label="검색 닫기">×</button>
+      </header>
+      <div class="search-results" id="search-results"></div>
+      <footer class="search-keys"><span><kbd>↑↓</kbd> 결과 이동</span><span><kbd>Enter</kbd> 열기</span><span><kbd>Esc</kbd> 닫기</span><span><kbd>← →</kbd> 이전·다음 단원</span></footer>
+    </div>
+  </dialog>
   <button class="toolbox-trigger" id="toolbox-trigger" type="button" aria-haspopup="dialog" aria-controls="toolbox-dialog"><i aria-hidden="true"><span></span><span></span><span></span><span></span></i><b>TOOLS</b><em>16</em></button>
   <dialog class="toolbox-dialog" id="toolbox-dialog" aria-labelledby="toolbox-title">
     <div class="toolbox-shell">
@@ -77,6 +88,7 @@
   <script src="data/curated/content-finalize.js"></script>
   <script src="data/curated/plus-lab.js"></script>
   <script src="app.js"></script>
+  <script src="search.js"></script>
   <script src="toolbox.js"></script>
 </body>
 </html>
