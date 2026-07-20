@@ -92,7 +92,7 @@
     const isPlus=categoryDefs[activeCategory].plus;
     reader.classList.toggle("plus-reader",Boolean(isPlus));
     const isBookmarked=readList(BOOKMARK_KEY).includes(activeNote);
-    reader.innerHTML=`<header class="note-title"><div class="note-title-row"><p>${isPlus?"PLUS LAB · PRACTICAL RECIPE":`${escapeHtml(categoryDefs[activeCategory].title)} · CONCEPT ${String(position+1).padStart(2,"0")}`}</p><div class="note-actions"><button class="note-bookmark-button ${isBookmarked?"active":""}" type="button" data-bookmark aria-pressed="${isBookmarked}" aria-label="${isBookmarked?"북마크에서 제거":"북마크에 저장"}"><i aria-hidden="true">◆</i><span>${isBookmarked?"저장됨":"북마크"}</span></button><button class="note-link-button" type="button" data-copy-link aria-label="현재 학습 노트 링크 복사"><i aria-hidden="true">↗</i><span>링크 복사</span></button></div></div><h1>${escapeHtml(cleanTitle(note.title))}</h1>${note.summary?`<span>${escapeHtml(note.summary)}</span>`:""}</header><div class="note-body">${note.content}</div><nav class="reader-nav">${prev?`<button data-go="${prev.sourceIndex}"><small>PREVIOUS</small><b>← ${escapeHtml(cleanTitle(prev.title))}</b></button>`:"<span></span>"}${next?`<button data-go="${next.sourceIndex}"><small>NEXT</small><b>${escapeHtml(cleanTitle(next.title))} →</b></button>`:""}</nav>`;
+    reader.innerHTML=`<header class="note-title"><div class="note-title-row"><p>${isPlus?"PLUS LAB · PRACTICAL RECIPE":`${escapeHtml(categoryDefs[activeCategory].title)} · CONCEPT ${String(position+1).padStart(2,"0")}`}</p><div class="note-actions"><button class="note-bookmark-button ${isBookmarked?"active":""}" type="button" data-bookmark aria-pressed="${isBookmarked}" aria-label="${isBookmarked?"북마크에서 제거":"북마크에 저장"}"><i aria-hidden="true">◆</i><span>${isBookmarked?"북마크 저장됨":"북마크에 저장"}</span></button></div></div><h1>${escapeHtml(cleanTitle(note.title))}</h1>${note.summary?`<span>${escapeHtml(note.summary)}</span>`:""}</header><div class="note-body">${note.content}</div><nav class="reader-nav">${prev?`<button data-go="${prev.sourceIndex}"><small>PREVIOUS</small><b>← ${escapeHtml(cleanTitle(prev.title))}</b></button>`:"<span></span>"}${next?`<button data-go="${next.sourceIndex}"><small>NEXT</small><b>${escapeHtml(cleanTitle(next.title))} →</b></button>`:""}</nav>`;
     reader.classList.remove("note-enter");void reader.offsetWidth;reader.classList.add("note-enter");
     renderTopics();
     reader.querySelectorAll("blockquote").forEach((item)=>item.classList.add("key-point"));
@@ -140,17 +140,10 @@
     const nextNotes=getNotes(nextCategory);if(!nextNotes.length)return;
     activeCategory=nextCategory;renderCategories();showNote(nextNotes[direction>0?0:nextNotes.length-1].sourceIndex,true);
   }
-  async function copyCurrentLink(button){
-    const url=location.href;
-    try{await navigator.clipboard.writeText(url);}
-    catch(e){const area=document.createElement("textarea");area.value=url;area.style.position="fixed";area.style.opacity="0";document.body.appendChild(area);area.select();document.execCommand("copy");area.remove();}
-    const label=button.querySelector("span");if(!label)return;label.textContent="복사 완료";button.classList.add("copied");
-    window.setTimeout(()=>{label.textContent="링크 복사";button.classList.remove("copied");},1600);
-  }
   function selectCategory(index){activeCategory=index;const first=getNotes(index)[0];activeNote=first?.sourceIndex||0;renderCategories();renderTopics();if(first)showNote(first.sourceIndex);}
   categoryNav.addEventListener("click",(e)=>{const b=e.target.closest("[data-category]");if(b)selectCategory(Number(b.dataset.category));});
   topicList.addEventListener("click",(e)=>{const b=e.target.closest("[data-note]");if(b)showNote(b.dataset.note,true);});
-  reader.addEventListener("click",(e)=>{const b=e.target.closest("[data-go]");if(b){showNote(b.dataset.go,true);return;}const bookmark=e.target.closest("[data-bookmark]");if(bookmark){toggleBookmark();return;}const copy=e.target.closest("[data-copy-link]");if(copy)copyCurrentLink(copy);});
+  reader.addEventListener("click",(e)=>{const b=e.target.closest("[data-go]");if(b){showNote(b.dataset.go,true);return;}const bookmark=e.target.closest("[data-bookmark]");if(bookmark)toggleBookmark();});
   function enableDragScroll(container){
     let down=false,startX=0,startScroll=0,moved=false,suppressClick=false;
     container.addEventListener("pointerdown",(event)=>{if(event.pointerType==="mouse"&&event.button!==0)return;down=true;moved=false;suppressClick=false;startX=event.clientX;startScroll=container.scrollLeft;});

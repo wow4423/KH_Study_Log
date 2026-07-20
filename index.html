@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AWS 클라우드 기반 DevOps 개발자 양성 과정 7회차 학습 정리</title>
   <meta name="description" content="7개월 동안 배운 내용을 개념별로 다시 묶고 다듬은 개인 학습 노트입니다." />
-  <link rel="stylesheet" href="style.css?v=20260720-2" />
+  <link rel="stylesheet" href="style.css?v=20260720-3" />
 </head>
 <body>
   <header class="site-header">
@@ -28,7 +28,7 @@
         <kbd>Ctrl K</kbd>
       </button>
       <div class="utility-actions">
-        <button type="button" id="library-trigger" aria-haspopup="dialog" aria-controls="library-dialog"><i aria-hidden="true">◆</i><span>내 학습함</span><em id="bookmark-count">0</em></button>
+        <button type="button" data-open-library aria-haspopup="dialog" aria-controls="library-dialog"><i aria-hidden="true">◆</i><span>내 학습함</span><em data-bookmark-count>0</em></button>
         <button type="button" id="random-note"><i aria-hidden="true">↝</i><span>랜덤 복습</span></button>
       </div>
       <div class="course-progress" aria-label="전체 학습 진행도">
@@ -73,6 +73,7 @@
       <div class="library-list" id="library-list"></div>
     </div>
   </dialog>
+  <button class="library-trigger-floating" type="button" data-open-library aria-label="북마크와 최근 본 개념 열기" aria-haspopup="dialog" aria-controls="library-dialog"><i aria-hidden="true">◆</i><b>내 학습함</b><em data-bookmark-count>0</em></button>
   <button class="toolbox-trigger" id="toolbox-trigger" type="button" aria-label="수업 도구함 열기" aria-haspopup="dialog" aria-controls="toolbox-dialog"><i aria-hidden="true"><span></span><span></span><span></span><span></span></i><b>TOOLS</b><em>16</em></button>
   <dialog class="toolbox-dialog" id="toolbox-dialog" aria-labelledby="toolbox-title">
     <div class="toolbox-shell">
@@ -115,9 +116,9 @@
   <script src="data/curated/worked-examples.js"></script>
   <script src="data/curated/content-finalize.js"></script>
   <script src="data/curated/plus-lab.js"></script>
-  <script src="app.js?v=20260720-2"></script>
-  <script src="search.js?v=20260720-2"></script>
-  <script src="study-tools.js?v=20260720-2"></script>
+  <script src="app.js?v=20260720-3"></script>
+  <script src="search.js?v=20260720-3"></script>
+  <script src="study-tools.js?v=20260720-3"></script>
   <script src="toolbox.js"></script>
 </body>
 </html>

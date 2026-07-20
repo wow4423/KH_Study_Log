@@ -4,10 +4,10 @@
 
   const progressText = document.getElementById("course-progress-text");
   const progressBar = document.getElementById("course-progress-bar");
-  const bookmarkCount = document.getElementById("bookmark-count");
+  const bookmarkCounts = [...document.querySelectorAll("[data-bookmark-count]")];
   const libraryBookmarkCount = document.getElementById("library-bookmark-count");
   const libraryDialog = document.getElementById("library-dialog");
-  const libraryTrigger = document.getElementById("library-trigger");
+  const libraryTriggers = [...document.querySelectorAll("[data-open-library]")];
   const libraryClose = document.getElementById("library-close");
   const libraryList = document.getElementById("library-list");
   const tabs = [...document.querySelectorAll("[data-library-tab]")];
@@ -44,7 +44,7 @@
     const percent = total ? Math.round((visited / total) * 100) : 0;
     progressText.textContent = `${visited} / ${total}`;
     progressBar.style.width = `${percent}%`;
-    bookmarkCount.textContent = state.bookmarks.length;
+    bookmarkCounts.forEach((element) => { element.textContent = state.bookmarks.length; });
     libraryBookmarkCount.textContent = state.bookmarks.length;
     if (libraryDialog.open) renderLibrary();
   }
@@ -61,10 +61,10 @@
     else libraryDialog.removeAttribute("open");
   }
 
-  libraryTrigger.addEventListener("click", openLibrary);
+  libraryTriggers.forEach((trigger) => trigger.addEventListener("click", openLibrary));
   libraryClose.addEventListener("click", closeLibrary);
   libraryDialog.addEventListener("click", (event) => { if (event.target === libraryDialog) closeLibrary(); });
-  libraryDialog.addEventListener("close", () => { document.body.classList.remove("library-open"); libraryTrigger.focus(); });
+  libraryDialog.addEventListener("close", () => { document.body.classList.remove("library-open"); });
   tabs.forEach((tab) => tab.addEventListener("click", () => { activeTab = tab.dataset.libraryTab; renderLibrary(); }));
   libraryList.addEventListener("click", (event) => {
     const item = event.target.closest("[data-library-source]");
