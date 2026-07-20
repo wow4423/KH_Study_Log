@@ -21,9 +21,14 @@
   ];
   const categoryNav=document.getElementById("category-nav"),topicList=document.getElementById("topic-list"),reader=document.getElementById("reader");
   const STORAGE_KEY="study-log:last-note";
+  const VISITED_KEY="study-log:visited";
+  const BOOKMARK_KEY="study-log:bookmarks";
+  const RECENT_KEY="study-log:recent";
   let activeCategory=0,activeNote=0;
   const escapeHtml=(s)=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   const plain=(html)=>{const el=document.createElement("div");el.innerHTML=html;return el.textContent.replace(/\s+/g," ").trim();};
+  function readList(key){try{const value=JSON.parse(localStorage.getItem(key)||"[]");return Array.isArray(value)?value:[];}catch(e){return [];}}
+  function writeList(key,value){try{localStorage.setItem(key,JSON.stringify(value));}catch(e){}}
   function cleanTitle(title){return String(title).replace(/^\d+(?:\.\d+)?\s*/,"").replace(/\s*실습(?:\s*노트)?$/," 실습").trim();}
   function cleanContent(html,includeGuide=true){
     const box=document.createElement("div");box.innerHTML=html||"";
@@ -74,18 +79,20 @@
   }
   function renderTopics(){
     const category=categoryDefs[activeCategory],notes=getNotes();
+    const visited=new Set(readList(VISITED_KEY)),bookmarks=new Set(readList(BOOKMARK_KEY));
     document.getElementById("category-title").textContent=category.title;document.getElementById("category-intro").textContent=category.intro;document.getElementById("chapter-number").textContent=category.plus?"SUPPLEMENT LIBRARY":`CHAPTER ${String(activeCategory+1).padStart(2,"0")}`;
-    topicList.innerHTML=notes.map((note,i)=>{const important=i===0||/(트랜잭션|보안|Security|인증|객체|상태|배포|Docker|AWS|관계|REST|실행 흐름|프로젝트)/i.test(note.title);return `<button data-note="${note.sourceIndex}" class="${String(note.sourceIndex)===String(activeNote)?"active":""} ${important?"important":""}" ${String(note.sourceIndex)===String(activeNote)?'aria-current="page"':""}><span>${String(i+1).padStart(2,"0")}</span><b>${escapeHtml(cleanTitle(note.title))}</b>${important?'<em aria-label="중요 개념" title="중요 개념"></em>':''}</button>`;}).join("");
+    topicList.innerHTML=notes.map((note,i)=>{const important=i===0||/(트랜잭션|보안|Security|인증|객체|상태|배포|Docker|AWS|관계|REST|실행 흐름|프로젝트)/i.test(note.title);const isVisited=visited.has(note.sourceIndex),isBookmarked=bookmarks.has(note.sourceIndex);return `<button data-note="${note.sourceIndex}" class="${String(note.sourceIndex)===String(activeNote)?"active":""} ${important?"important":""} ${isVisited?"visited":""} ${isBookmarked?"bookmarked":""}" ${String(note.sourceIndex)===String(activeNote)?'aria-current="page"':""}><span>${String(i+1).padStart(2,"0")}</span><b>${escapeHtml(cleanTitle(note.title))}</b>${important?'<em aria-label="중요 개념" title="중요 개념"></em>':''}${isBookmarked?'<i class="sidebar-bookmark" aria-label="북마크됨" title="북마크됨">◆</i>':''}</button>`;}).join("");
     const current=topicList.querySelector(".active");if(current){if(window.matchMedia("(max-width:700px)").matches)topicList.scrollLeft=Math.max(0,current.offsetLeft-(topicList.clientWidth-current.offsetWidth)/2);else topicList.scrollTop=Math.max(0,current.offsetTop-(topicList.clientHeight-current.offsetHeight)/2);}
   }
   function showNote(sourceIndex,moveToReadingStart=false){
     const notes=getNotes(),note=notes.find((item)=>String(item.sourceIndex)===String(sourceIndex));if(!note)return;activeNote=String(sourceIndex);
-    rememberLocation(activeNote);
+    rememberLocation(activeNote);markVisited(activeNote);
     const position=notes.findIndex((n)=>String(n.sourceIndex)===String(sourceIndex)),prev=notes[position-1],next=notes[position+1];
     document.getElementById("note-position").textContent=`${position+1} / ${notes.length}`;document.getElementById("progress-bar").style.width=`${((position+1)/notes.length)*100}%`;
     const isPlus=categoryDefs[activeCategory].plus;
     reader.classList.toggle("plus-reader",Boolean(isPlus));
-    reader.innerHTML=`<header class="note-title"><div class="note-title-row"><p>${isPlus?"PLUS LAB · PRACTICAL RECIPE":`${escapeHtml(categoryDefs[activeCategory].title)} · CONCEPT ${String(position+1).padStart(2,"0")}`}</p><button class="note-link-button" type="button" data-copy-link aria-label="현재 학습 노트 링크 복사"><i aria-hidden="true">↗</i><span>링크 복사</span></button></div><h1>${escapeHtml(cleanTitle(note.title))}</h1>${note.summary?`<span>${escapeHtml(note.summary)}</span>`:""}</header><div class="note-body">${note.content}</div><nav class="reader-nav">${prev?`<button data-go="${prev.sourceIndex}"><small>PREVIOUS</small><b>← ${escapeHtml(cleanTitle(prev.title))}</b></button>`:"<span></span>"}${next?`<button data-go="${next.sourceIndex}"><small>NEXT</small><b>${escapeHtml(cleanTitle(next.title))} →</b></button>`:""}</nav>`;
+    const isBookmarked=readList(BOOKMARK_KEY).includes(activeNote);
+    reader.innerHTML=`<header class="note-title"><div class="note-title-row"><p>${isPlus?"PLUS LAB · PRACTICAL RECIPE":`${escapeHtml(categoryDefs[activeCategory].title)} · CONCEPT ${String(position+1).padStart(2,"0")}`}</p><div class="note-actions"><button class="note-bookmark-button ${isBookmarked?"active":""}" type="button" data-bookmark aria-pressed="${isBookmarked}" aria-label="${isBookmarked?"북마크에서 제거":"북마크에 저장"}"><i aria-hidden="true">◆</i><span>${isBookmarked?"저장됨":"북마크"}</span></button><button class="note-link-button" type="button" data-copy-link aria-label="현재 학습 노트 링크 복사"><i aria-hidden="true">↗</i><span>링크 복사</span></button></div></div><h1>${escapeHtml(cleanTitle(note.title))}</h1>${note.summary?`<span>${escapeHtml(note.summary)}</span>`:""}</header><div class="note-body">${note.content}</div><nav class="reader-nav">${prev?`<button data-go="${prev.sourceIndex}"><small>PREVIOUS</small><b>← ${escapeHtml(cleanTitle(prev.title))}</b></button>`:"<span></span>"}${next?`<button data-go="${next.sourceIndex}"><small>NEXT</small><b>${escapeHtml(cleanTitle(next.title))} →</b></button>`:""}</nav>`;
     reader.classList.remove("note-enter");void reader.offsetWidth;reader.classList.add("note-enter");
     renderTopics();
     reader.querySelectorAll("blockquote").forEach((item)=>item.classList.add("key-point"));
@@ -109,6 +116,22 @@
     if(target.categoryIndex!==activeCategory){activeCategory=target.categoryIndex;renderCategories();}
     showNote(target.sourceIndex,moveToReadingStart);
   }
+  function markVisited(sourceIndex){
+    const visited=readList(VISITED_KEY);if(!visited.includes(sourceIndex)){visited.push(sourceIndex);writeList(VISITED_KEY,visited);}
+    const recent=readList(RECENT_KEY).filter((value)=>value!==sourceIndex);recent.unshift(sourceIndex);writeList(RECENT_KEY,recent.slice(0,12));
+    dispatchStudyChange();
+  }
+  function toggleBookmark(){
+    const bookmarks=readList(BOOKMARK_KEY),index=bookmarks.indexOf(activeNote);
+    if(index>=0)bookmarks.splice(index,1);else bookmarks.unshift(activeNote);
+    writeList(BOOKMARK_KEY,bookmarks);showNote(activeNote,false);dispatchStudyChange();
+  }
+  function allEntries(){
+    return categoryDefs.flatMap((category,categoryIndex)=>getNotes(categoryIndex).map((note)=>({...note,categoryIndex,categoryTitle:category.title,title:cleanTitle(note.title)})));
+  }
+  function findEntry(sourceIndex){return allEntries().find((entry)=>entry.sourceIndex===String(sourceIndex));}
+  function getStudyState(){return {current:activeNote,visited:readList(VISITED_KEY),bookmarks:readList(BOOKMARK_KEY),recent:readList(RECENT_KEY),entries:allEntries()};}
+  function dispatchStudyChange(){window.dispatchEvent(new CustomEvent("study:statechange",{detail:getStudyState()}));}
   function goRelative(direction){
     const notes=getNotes(),position=notes.findIndex((note)=>String(note.sourceIndex)===String(activeNote));
     if(position+direction>=0&&position+direction<notes.length){showNote(notes[position+direction].sourceIndex,true);return;}
@@ -127,7 +150,7 @@
   function selectCategory(index){activeCategory=index;const first=getNotes(index)[0];activeNote=first?.sourceIndex||0;renderCategories();renderTopics();if(first)showNote(first.sourceIndex);}
   categoryNav.addEventListener("click",(e)=>{const b=e.target.closest("[data-category]");if(b)selectCategory(Number(b.dataset.category));});
   topicList.addEventListener("click",(e)=>{const b=e.target.closest("[data-note]");if(b)showNote(b.dataset.note,true);});
-  reader.addEventListener("click",(e)=>{const b=e.target.closest("[data-go]");if(b){showNote(b.dataset.go,true);return;}const copy=e.target.closest("[data-copy-link]");if(copy)copyCurrentLink(copy);});
+  reader.addEventListener("click",(e)=>{const b=e.target.closest("[data-go]");if(b){showNote(b.dataset.go,true);return;}const bookmark=e.target.closest("[data-bookmark]");if(bookmark){toggleBookmark();return;}const copy=e.target.closest("[data-copy-link]");if(copy)copyCurrentLink(copy);});
   function enableDragScroll(container){
     let down=false,startX=0,startScroll=0,moved=false,suppressClick=false;
     container.addEventListener("pointerdown",(event)=>{if(event.pointerType==="mouse"&&event.button!==0)return;down=true;moved=false;suppressClick=false;startX=event.clientX;startScroll=container.scrollLeft;});
@@ -148,5 +171,6 @@
   const initial=findByHash(location.hash)||findByHash(`#${readStoredLocation()||""}`);
   if(initial){activeCategory=initial.categoryIndex;renderCategories();showNote(initial.sourceIndex);}
   else{selectCategory(0);}
-  window.StudyNav={categoryDefs,getNotes,cleanTitle,plain,goToSource,goRelative};
+  window.StudyNav={categoryDefs,getNotes,cleanTitle,plain,goToSource,goRelative,getStudyState,findEntry,toggleBookmark};
+  dispatchStudyChange();
 })();

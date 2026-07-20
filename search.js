@@ -3,7 +3,8 @@
   if (!nav) return;
 
   const dialog = document.getElementById("search-dialog");
-  const trigger = document.getElementById("search-trigger");
+  const triggers = [...document.querySelectorAll("#search-trigger,[data-open-search]")];
+  const floatingTrigger = document.getElementById("search-trigger");
   const closeButton = document.getElementById("search-close");
   const input = document.getElementById("search-input");
   const resultsBox = document.getElementById("search-results");
@@ -82,7 +83,8 @@
     activeIndex = results.length ? 0 : -1;
 
     if (!query.trim()) {
-      resultsBox.innerHTML = `<p class="search-hint"><strong>${index.length}개 학습 개념</strong>에서 제목과 본문을 함께 검색해요.<span>예: JWT, N+1, useEffect, 트랜잭션</span></p>`;
+      const recent=(nav.getStudyState?.().recent||[]).slice(0,5).map((source)=>index.find((entry)=>entry.sourceIndex===source)).filter(Boolean);
+      resultsBox.innerHTML = `<div class="search-hint"><strong>${index.length}개 학습 개념의 제목과 본문을 함께 검색해요.</strong><span>예: JWT, N+1, useEffect, 트랜잭션</span></div>${recent.length?`<section class="search-recent"><p>최근 본 개념</p>${recent.map((entry)=>`<button class="search-result" data-source="${entry.sourceIndex}"><span class="search-result-category">${escapeHtml(entry.categoryTitle)}</span><b>${escapeHtml(entry.title)}</b></button>`).join("")}</section>`:""}`;
       return;
     }
     if (!results.length) {
@@ -121,10 +123,10 @@
     else dialog.removeAttribute("open");
   }
 
-  trigger.addEventListener("click", openSearch);
+  triggers.forEach((trigger)=>trigger.addEventListener("click", openSearch));
   closeButton.addEventListener("click", closeSearch);
   dialog.addEventListener("click", (e) => { if (e.target === dialog) closeSearch(); });
-  dialog.addEventListener("close", () => { document.body.classList.remove("search-open"); trigger.focus(); });
+  dialog.addEventListener("close", () => { document.body.classList.remove("search-open"); floatingTrigger?.focus(); });
 
   input.addEventListener("input", () => renderResults(input.value));
   resultsBox.addEventListener("click", (e) => {

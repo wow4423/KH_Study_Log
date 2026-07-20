@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AWS 클라우드 기반 DevOps 개발자 양성 과정 7회차 학습 정리</title>
   <meta name="description" content="7개월 동안 배운 내용을 개념별로 다시 묶고 다듬은 개인 학습 노트입니다." />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=20260720-2" />
 </head>
 <body>
   <header class="site-header">
@@ -21,6 +21,21 @@
   </nav>
 
   <main class="study-main">
+    <section class="study-utilities" aria-label="학습 편의 기능">
+      <button class="search-entry" type="button" data-open-search aria-haspopup="dialog" aria-controls="search-dialog">
+        <i aria-hidden="true">⌕</i>
+        <span><strong>배운 개념 바로 찾기</strong><small>제목뿐 아니라 144개 노트의 본문까지 검색해요</small></span>
+        <kbd>Ctrl K</kbd>
+      </button>
+      <div class="utility-actions">
+        <button type="button" id="library-trigger" aria-haspopup="dialog" aria-controls="library-dialog"><i aria-hidden="true">◆</i><span>내 학습함</span><em id="bookmark-count">0</em></button>
+        <button type="button" id="random-note"><i aria-hidden="true">↝</i><span>랜덤 복습</span></button>
+      </div>
+      <div class="course-progress" aria-label="전체 학습 진행도">
+        <span><strong>읽은 개념</strong><em id="course-progress-text">0 / 0</em></span>
+        <i><b id="course-progress-bar"></b></i>
+      </div>
+    </section>
     <section class="chapter-head">
       <div><span id="chapter-number"></span><h2 id="category-title"></h2><p id="category-intro"></p></div>
       <div class="chapter-progress"><span id="note-position"></span><i><b id="progress-bar"></b></i></div>
@@ -34,7 +49,7 @@
     </div>
     <button class="top-button" id="top-button" aria-label="페이지 맨 위로 이동"><span>↑</span> TOP</button>
   </main>
-  <button class="search-trigger" id="search-trigger" type="button" aria-label="학습 노트 검색 열기" aria-haspopup="dialog" aria-controls="search-dialog"><i aria-hidden="true">⌕</i><b>SEARCH</b><em>Ctrl K</em></button>
+  <button class="search-trigger" id="search-trigger" type="button" aria-label="학습 노트 검색 열기" aria-haspopup="dialog" aria-controls="search-dialog"><i aria-hidden="true">⌕</i><b>검색</b><em>Ctrl K</em></button>
   <dialog class="search-dialog" id="search-dialog" aria-label="학습 노트 검색">
     <div class="search-shell">
       <header class="search-header">
@@ -43,6 +58,19 @@
       </header>
       <div class="search-results" id="search-results"></div>
       <footer class="search-keys"><span><kbd>↑↓</kbd> 결과 이동</span><span><kbd>Enter</kbd> 열기</span><span><kbd>Esc</kbd> 닫기</span><span><kbd>← →</kbd> 이전·다음 단원</span></footer>
+    </div>
+  </dialog>
+  <dialog class="library-dialog" id="library-dialog" aria-labelledby="library-title">
+    <div class="library-shell">
+      <header class="library-header">
+        <div><span>MY STUDY</span><h2 id="library-title">내 학습함</h2><p>저장한 개념과 최근에 읽은 내용을 한곳에서 다시 찾아보세요.</p></div>
+        <button id="library-close" type="button" aria-label="내 학습함 닫기">×</button>
+      </header>
+      <div class="library-tabs" role="tablist" aria-label="학습함 목록">
+        <button type="button" role="tab" aria-selected="true" data-library-tab="bookmarks">북마크 <em id="library-bookmark-count">0</em></button>
+        <button type="button" role="tab" aria-selected="false" data-library-tab="recent">최근 본 개념</button>
+      </div>
+      <div class="library-list" id="library-list"></div>
     </div>
   </dialog>
   <button class="toolbox-trigger" id="toolbox-trigger" type="button" aria-label="수업 도구함 열기" aria-haspopup="dialog" aria-controls="toolbox-dialog"><i aria-hidden="true"><span></span><span></span><span></span><span></span></i><b>TOOLS</b><em>16</em></button>
@@ -87,8 +115,9 @@
   <script src="data/curated/worked-examples.js"></script>
   <script src="data/curated/content-finalize.js"></script>
   <script src="data/curated/plus-lab.js"></script>
-  <script src="app.js"></script>
-  <script src="search.js"></script>
+  <script src="app.js?v=20260720-2"></script>
+  <script src="search.js?v=20260720-2"></script>
+  <script src="study-tools.js?v=20260720-2"></script>
   <script src="toolbox.js"></script>
 </body>
 </html>
